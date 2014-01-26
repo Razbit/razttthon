@@ -25,7 +25,7 @@ from random import randint
 
 class cGame(cMain, cPlayerHandler):
 
-    gameGrid = [['o', ' ', ' '],[' ', ' ', ' '],['x', ' ', ' ']] #contains the game grid and marks
+    gameGrid = [[' ', ' ', ' '],[' ', ' ', ' '],[' ', ' ', ' ']] #contains the game grid and marks
     cont = True
     turns = 0 
 
@@ -43,7 +43,7 @@ class cGame(cMain, cPlayerHandler):
     def loop(self): #Main game loop, loops until stop() is called.
         while self.cont == True:
             self.turns += 1
-            print self.turns
+
             self.printGame()
 
             if self.turns % 2 == 0:
