@@ -78,16 +78,42 @@ class cRazttthon(cMain, cPlayerHandler, cGame):
         playerfile.close()
 
     def newGame(self):
-        p1name = raw_input("Player 1, enter your name: ")
-        pid1 = cPlayerHandler.getPID(self, p1name)
-        if pid1 == -1:
-            print "No such player found. Creating.."
-            pid1 = cPlayerHandler.addPlayer(self, p1name)
+        
+        pid1, pid2 = 0,0
 
-        p2name = raw_input("Player 2, enter your name: ")
-        pid2 = cPlayerHandler.getPID(self, p2name)
-        if pid2 == -1:
-            print "No such player found. Creating.."
-            pid2 = cPlayerHandler.addPlayer(self, p2name)
+        while 1:
+            mode = raw_input("Enter 1 for singleplayer, 2 for multiplayer: ")
+            try:
+                mode = int(mode)
+            except ValueError:
+                print "Please, enter 1 or 2"
+                continue
 
+            if mode == 1:
+                pid1 = 0
+                
+                pName = raw_input("Enter your name: ")
+                pid2 = cPlayerHandler.getPID(self, pName)
+                if pid2 == -1:
+                    print "No such player found. Creating.."
+                    pid2 = cPlayerHandler.addPlayer(self, pName)
+                break
+        
+            elif mode == 2:
+                p1name = raw_input("Player 1, enter your name: ")
+                pid1 = cPlayerHandler.getPID(self, p1name)
+                if pid1 == -1:
+                    print "No such player found. Creating.."
+                    pid1 = cPlayerHandler.addPlayer(self, p1name)
+
+                p2name = raw_input("Player 2, enter your name: ")
+                pid2 = cPlayerHandler.getPID(self, p2name)
+                if pid2 == -1:
+                    print "No such player found. Creating.."
+                    pid2 = cPlayerHandler.addPlayer(self, p2name)
+
+                break
+
+            print "Please, enter 1 or 2" #If mode wasn't 1 or 2, loop again.
+         
         cGame.__init__(self, pid1, pid2) #Start new game
