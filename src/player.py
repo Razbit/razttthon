@@ -18,45 +18,67 @@
 
 #This file contains the player class
 
-import mainc
-
-
-
-class cPlayer(mainc.cMain):
-    def __init__(self, id):
-        self.id = id
-        self.name = mainc.cMain.playerlist[id][0]
-        self.gamesPlayed = mainc.cMain.playerlist[id][1]
-
-    def getID(self): return self.id
-    def getName(self): return self.name
-    def getGames(self): return self.gamesPlayed
-    def getData(self):
-        return [self.name, self.gamesPlayed]
+from mainc import cMain
     
-class cPlayerHandler(mainc.cMain):
+class cPlayerHandler(cMain):
     def __init__(self):
         pass
+
+    def getName(self, id): return cMain.playerlist[id][0]
+    def getGames(self, id): return cMain.playerlist[id][1]
+    def getWins(self, id): return cMain.playerlist[id][2]
+    def getLosses(self, id): return cMain.playerlist[id][3]
+    def getQuits(self, id): return cMain.playerlist[id][4]
+    def getData(self, id):
+        return [self.getName(id), self.getGames(id), self.getWins(id), self.getLosses(id), self.getQuits(id)]
 
     def addPlayer(self, name):
         #Adds a new player with name 'name' to the cMain's list
         if self.getPID(name) == -1: #If player doesn't exist yet
-            mainc.cMain.playerlist.append([name, 0]) #Add player
+            cMain.playerlist.append([name, 0]) #Add player
             return True
         else:
             return False
 
     def modPlayer(self, id):
         try:
-            mainc.cMain.playerlist[id][1] += 1 #Plus 1 played games
+            cMain.playerlist[id][1] += 1 #Plus 1 played games
+            return True
+        except IndexError:
+            return False
+
+    def addGame(self, id):
+        try:
+            cMain.playerlist[id][1] += 1
+            return True
+        except IndexError:
+            return False
+
+    def addWin(self, id):
+        try:
+            cMain.playerlist[id][2] += 1
+            return True
+        except IndexError:
+            return False
+
+    def addLose(self, id):
+        try:
+            cMain.playerlist[id][3] += 1
+            return True
+        except IndexError:
+            return False
+
+    def addQuit(self, id):
+        try:
+            cMain.playerlist[id][4] += 1
             return True
         except IndexError:
             return False
 
     def getPID(self, name):
         #Search the playerlist, return index where player 'name' was found
-        for index in range(len(mainc.cMain.playerlist)):
-            if mainc.cMain.playerlist[index][0].upper() == name.upper():
+        for index in range(len(cMain.playerlist)):
+            if cMain.playerlist[index][0].upper() == name.upper():
                 return index
         
         return -1 #If item isn't found, return -1
