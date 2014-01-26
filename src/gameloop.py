@@ -16,15 +16,19 @@
 #
 ################################################################################
 
-#This file contains the game loop
+#This file contains the game functionality and the game loop
 
 from mainc import cMain
+from player import cPlayerHandler
 from razlib import printf
 from random import randint
 
-class cGame(cMain):
+class cGame(cMain, cPlayerHandler):
 
     gameGrid = [['o', ' ', ' '],[' ', ' ', ' '],['x', ' ', ' ']] #contains the game grid and marks
+    cont = True
+    turns = 0 
+
     def __init__(self, pid1, pid2):
         if pid1 > pid2: #Flip so that player 0 has smaller pid (cpu is always player 0 in that case)
             tempPid = pid2
@@ -32,7 +36,23 @@ class cGame(cMain):
             pid1 = tempPid
 
         self.players = [[pid1, cMain.playerlist[pid1][0], 'x'], [pid2, cMain.playerlist[pid2][0], 'o']] #name and mark for both
+        cont = True
+        turns = 0 
+        self.loop()
 
+    def loop(self): #Main game loop, loops until stop() is called.
+        while self.cont == True:
+            self.turns += 1
+            print self.turns
+            self.printGame()
+
+            if self.turns % 2 == 0:
+                self.turn(0)
+                self.over(0)
+            else:
+                self.turn(1)
+                self.over(1)
+                       
     def printGame(self):
         printf("   # A | B | C \n")
         printf("###############\n")
@@ -65,7 +85,7 @@ class cGame(cMain):
                 
                 try:
                     if temp[0] == 'S':
-                        self.stop()
+                        self.stop(-1) #Stopcode for user quit
                         return
                 except IndexError:
                     pass
@@ -105,7 +125,6 @@ class cGame(cMain):
             self.gameGrid[pos[1]][pos[0]] = self.players[player][2]
 
     def twoInaRow(self, mode): #Mode = 0: check if cpu can win mode = 1: check if opponent can win, try to block if so.
-        
         if mode == 0: #game pid = 0, in this case the cpu
             mark = self.players[0][2] #Cpu's mark
             opMark = self.players[1][2] #Opponent's mark
@@ -154,3 +173,44 @@ class cGame(cMain):
                 else:
                     self.gameGrid[row][col] = opMark #Place CPU's tic, opponent's winning blocked.
         return True
+    
+    def over(self, player):
+        #Generate arrays of possible winning rows
+        rows = []
+        rows.append(self.gameGrid[0]) #row 1
+        rows.append(self.gameGrid[1]) #row 2
+        rows.append(self.gameGrid[2]) #row 3
+        rows.append([self.gameGrid[0][0],self.gameGrid[1][0], self.gameGrid[2][0]]) #col 1
+        rows.append([self.gameGrid[0][1],self.gameGrid[1][1], self.gameGrid[2][1]]) #col 2
+        rows.append([self.gameGrid[0][2], self.gameGrid[1][2], self.gameGrid[2][2]]) #col 3
+        rows.append([self.gameGrid[0][0], self.gameGrid[1][1], self.gameGrid[2][2]]) #\
+        rows.append([self.gameGrid[0][2], self.gameGrid[1][1], self.gameGrid[2][0]]) #/
+        
+        for i in range(len(rows)):
+            count = rows[i].count(self.players[player][2])
+            if count == 3:
+                self.stop(player)
+
+    def stop(self, status):
+        self.cont = False
+    
+        #+1 game for both
+        cPlayerHandler.addGame(self, self.players[0][0])
+        cPlayerHandler.addGame(self, self.players[1][0])
+
+        #Exit status
+        if status == -1: #Normal quit
+             #+1 quit for both
+            cPlayerHandler.addQuit(self, self.players[0][0])
+            cPlayerHandler.addQuit(self, self.players[1][0])
+        elif status == 0: #P0 won
+            cPlayerHandler.addWin(self, self.players[0][0])
+            cPlayerHandler.addLose(self, self.players[1][0])
+        
+        elif status == 1: #P1 won
+            cPlayerHandler.addWin(self, self.players[1][0])
+            cPlayerHandler.addLose(self, self.players[0][0])
+        
+        elif status == 2: #Draw
+            cPlayerHandler.addLose(self, self.players[0][0])
+            cPlayerHandler.addLose(self, self.players[1][0])
