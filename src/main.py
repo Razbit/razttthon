@@ -18,49 +18,35 @@
 
 #This file contains the main loop
 
-from mainc import cMain
-from player import cPlayerHandler
-from gameloop import cGame
+from mainc import cRazttthon
 
-def parsePlayerFile():
-    try:
-        playerfile = open("players.save", "r+")
-    except IOError:
-        print "No players.save file available."
-        cMain.playerlist = []
-        return
+game = cRazttthon()
 
-    line = "a"
-    while line != "": #Read through the file
-        line = playerfile.readline()
-        
-        try:
-            if line[0] == '#': # comments
-                continue
-        except IndexError:
-            pass
+print "Welcome to Razttthon, a Tic Tac Toe -game!"
 
-        line[:-1] #Remove leading newline
-        cMain.playerlist.append(line.split())
+game.parsePlayerFile()
+
+while 1:
+    arg = ""
     
-    try:
-        cMain.playerlist.pop() #Remove last item, it is garbage
-    except IndexError:
-        pass
-    
-    for index in range(len(cMain.playerlist)):
-        cMain.playerlist[index][1] = int(cMain.playerlist[index][1])
-        cMain.playerlist[index][2] = int(cMain.playerlist[index][2])
-        cMain.playerlist[index][3] = int(cMain.playerlist[index][3])
-        cMain.playerlist[index][4] = int(cMain.playerlist[index][4])
-        
+    while 1:
+        arg = raw_input(" >: ")
+        if arg in ['play', 'p', 'quit', 'q', 'help', 'h']:
+            break
+        print "Type 'help' if you need help."
 
-parsePlayerFile()
-phandler = cPlayerHandler()
+    if arg in ['play', 'p']:
+        game.newGame()
 
-#Testing...
-game = cGame(1,2)
+    elif arg in ['quit', 'q']:
+        if raw_input("Are you sure (Y/n)? ").upper() in ['N', 'NO']:
+            continue
+        break
 
-print phandler.getData(1)
-print phandler.getData(2)
+    elif arg in ['help', 'h']:
+        print "  help, h: get help"
+        print "  quit, q: quit"
+        print "  play, p: start a new game"
+
+#game.savePlayerFile()
 print "Bye!"
