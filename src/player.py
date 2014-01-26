@@ -34,18 +34,8 @@ class cPlayerHandler(cMain):
 
     def addPlayer(self, name):
         #Adds a new player with name 'name' to the cMain's list
-        if self.getPID(name) == -1: #If player doesn't exist yet
-            cMain.playerlist.append([name, 0]) #Add player
-            return True
-        else:
-            return False
-
-    def modPlayer(self, id):
-        try:
-            cMain.playerlist[id][1] += 1 #Plus 1 played games
-            return True
-        except IndexError:
-            return False
+        cMain.playerlist.append([name, 0, 0, 0, 0]) #Add player
+        return len(cMain.playerlist) - 1 #Return PID for the newly created player
 
     def addGame(self, id):
         try:
