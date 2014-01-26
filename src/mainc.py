@@ -16,7 +16,39 @@
 #
 ################################################################################
 
-#This file contains the main class
+#This file contains the main class and save io
+
+def parsePlayerFile():
+    try:
+        playerfile = open("players.save", "r+")
+    except IOError:
+        print "No players.save file available."
+        cMain.playerlist = []
+        return
+
+    line = "a"
+    while line != "": #Read through the file
+        line = playerfile.readline()
+        
+        try:
+            if line[0] == '#': # comments
+                continue
+        except IndexError:
+            pass
+
+        line[:-1] #Remove leading newline
+        cMain.playerlist.append(line.split())
+    
+    try:
+        cMain.playerlist.pop() #Remove last item, it is garbage
+    except IndexError:
+        pass
+    
+    for index in range(len(cMain.playerlist)):
+        cMain.playerlist[index][1] = int(cMain.playerlist[index][1])
+        cMain.playerlist[index][2] = int(cMain.playerlist[index][2])
+        cMain.playerlist[index][3] = int(cMain.playerlist[index][3])
+        cMain.playerlist[index][4] = int(cMain.playerlist[index][4])
 
 class cMain:
     
