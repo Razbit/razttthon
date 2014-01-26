@@ -20,12 +20,43 @@
 
 import mainc
 
-class Player(mainc.Main):
+class cPlayer(mainc.cMain):
     def __init__(self, id):
         self.id = id
-        self.name = mainc.Main.playerlist[id][0]
-        self.gamesPlayed = mainc.Main.playerlist[id][1]
+        self.name = mainc.cMain.playerlist[id][0]
+        self.gamesPlayed = mainc.cMain.playerlist[id][1]
 
+    def getID(self): return self.id
     def getName(self): return self.name
     def getGames(self): return self.gamesPlayed
+    def getData(self):
+        return [self.name, self.gamesPlayed]
     
+class cPlayerHandler(mainc.cMain):
+    def __init__(self):
+        pass
+
+    def addPlayer(self, name):
+        #Adds a new player with name 'name' to the cMain's list
+        if self.getPID(name) == -1: #If player doesn't exist yet
+            mainc.cMain.playerlist.append([name, 0]) #Add player
+            return True
+        else:
+            return False
+
+    def modPlayer(self, id):
+        try:
+            mainc.cMain.playerlist[id][1] += 1 #Plus 1 played games
+            return True
+        except IndexError:
+            return False
+
+    def getPID(self, name):
+        #Search the playerlist, return index where player 'name' was found
+        for index in range(len(mainc.cMain.playerlist)):
+            if mainc.cMain.playerlist[index][0].upper() == name.upper():
+                return index
+        
+        return -1 #If item isn't found, return -1
+        
+        
