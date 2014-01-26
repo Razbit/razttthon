@@ -25,7 +25,8 @@ class cMain:
     def __init__(self):
         pass
 
-from razlib import fprintf
+from time import sleep
+from razlib import fprintf, clearScr
 from player import cPlayerHandler
 from gameloop import cGame
 
@@ -115,5 +116,9 @@ class cRazttthon(cMain, cPlayerHandler, cGame):
                 break
 
             print "Please, enter 1 or 2" #If mode wasn't 1 or 2, loop again.
-         
+        
+        sleep(0.5) #Why sleep? Because why not?
+
         cGame.__init__(self, pid1, pid2) #Start new game
+        #Clear screen when game finishes
+        clearScr()
