@@ -20,7 +20,7 @@
 
 from mainc import cMain
 from player import cPlayerHandler
-from razlib import printf
+from razlib import printf, clearScr
 from random import randint
 
 class cGame(cMain, cPlayerHandler):
@@ -41,10 +41,11 @@ class cGame(cMain, cPlayerHandler):
         self.loop()
 
     def loop(self): #Main game loop, loops until stop() is called.
+        
+        self.printGame()
+
         while self.cont == True:
             self.turns += 1
-
-            self.printGame()
 
             if self.turns % 2 == 0:
                 self.turn(0)
@@ -52,26 +53,35 @@ class cGame(cMain, cPlayerHandler):
             else:
                 self.turn(1)
                 self.over(1)
-                       
+            
+            self.printGame()
+
     def printGame(self):
+        clearScr()
         printf("   # A | B | C \n")
         printf("###############\n")
         printf(" 1 # %s | %s | %s \n", self.gameGrid[0][0], self.gameGrid[0][1], self.gameGrid[0][2])
         printf("---#-----------\n")
         printf(" 2 # %s | %s | %s \n", self.gameGrid[1][0], self.gameGrid[1][1], self.gameGrid[1][2])
         printf("---#-----------\n")
-        printf(" 3 # %s | %s | %s \n", self.gameGrid[2][0], self.gameGrid[2][1], self.gameGrid[2][2])
+        printf(" 3 # %s | %s | %s \n\n", self.gameGrid[2][0], self.gameGrid[2][1], self.gameGrid[2][2])
 
     def turn(self, player):
         pid = self.players[player][0]
         if pid == 0: #CPU
+            print "CPU's turn"
+
             if self.twoInaRow(0) == True:
                 return
             elif self.twoInaRow(1) == True:
                 return
             else: #We cannot win nor block, time for random placement
-                row = randint(0,2)
-                col = randint(0,2)
+                valid = False
+                while valid == False:
+                    row = randint(0,2)
+                    col = randint(0,2)
+                    if self.gameGrid[row][col] == ' ':
+                        valid == True
 
                 self.gameGrid[row][col] = self.players[player][2]
         
@@ -190,6 +200,15 @@ class cGame(cMain, cPlayerHandler):
             count = rows[i].count(self.players[player][2])
             if count == 3:
                 self.stop(player)
+
+        count = 0
+
+        for i in range(3): #count empty cells
+            for j in range(3):
+                if self.gameGrid[i][j] == ' ':
+                    count += 1
+        if count == 0: #quit if board is full
+            self.stop(2)
 
     def stop(self, status):
         self.cont = False
