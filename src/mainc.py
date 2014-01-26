@@ -18,7 +18,9 @@
 
 #This file contains the main class
 
-class Main:
-    playerlist = [["razbit", 2]]
+class cMain:
+    
+    playerlist=[]
+
     def __init__(self):
         pass
