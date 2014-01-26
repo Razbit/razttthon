@@ -21,7 +21,7 @@
 from mainc import cMain
 from player import cPlayerHandler
 from razlib import printf, clearScr
-from random import randint
+from random import sample
 
 class cGame(cMain, cPlayerHandler):
 
@@ -76,12 +76,23 @@ class cGame(cMain, cPlayerHandler):
             elif self.twoInaRow(1) == True:
                 return
             else: #We cannot win nor block, time for random placement
+                #Generate random arrays of rows and 
+                rows = sample(range(3),3)
+                cols = sample(range(3),3)
+                row = 0
+                col = 0
+                
                 valid = False
-                while valid == False:
-                    row = randint(0,2)
-                    col = randint(0,2)
-                    if self.gameGrid[row][col] == ' ':
-                        valid == True
+                
+                for i in range(3):
+                    for j in range(3):
+                        row = rows[i]
+                        col = cols[j]
+                        if self.gameGrid[row][col] == ' ':
+                            valid = True
+                            break
+                    if valid == True:
+                        break
 
                 self.gameGrid[row][col] = self.players[player][2]
         
