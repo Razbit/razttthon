@@ -68,7 +68,7 @@ class cRazttthon(cMain, cPlayerHandler, cGame):
                 cMain.playerlist[index][2] = int(cMain.playerlist[index][2])
                 cMain.playerlist[index][3] = int(cMain.playerlist[index][3])
                 cMain.playerlist[index][4] = int(cMain.playerlist[index][4])
-            except ValueError:
+            except (ValueError, IndexError): #Missing items or corrupted chars
                 cMain.playerlist.pop(index) #Remove corrupted line
 
         if len(cMain.playerlist) == 0: #If file was corrupted we have to create a new one
