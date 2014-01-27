@@ -162,7 +162,7 @@ class cRazttthon(cMain, cPlayerHandler, cGame):
             return
 
         pData = cPlayerHandler.getData(self, pid)
-        printf("The player %15.15s has played %i games, of which they have won %i and lost %i. They have quit %i times.\n", pData[0], pData[1], pData[2], pData[3], pData[4])
+        printf("The player %s has played %i games, of which they have won %i and lost %i. They have quit %i times.\n", pData[0], pData[1], pData[2], pData[3], pData[4])
         
     def leaderboard(self, strMode):
         mode = -1
