@@ -37,8 +37,9 @@ class cRazttthon(cMain, cPlayerHandler, cGame):
         try:
             playerfile = open("players.save", "r")
         except IOError:
-            print "No players.save file available."
-            cMain.playerlist = []
+            print "No players.save file available, creating.."
+            cMain.playerlist = [['CPU', 0, 0, 0, 0]] #No file available, create a new one.
+            cMain.nPlayers = len(cMain.playerlist)
             return
 
         line = "a"
@@ -62,17 +63,24 @@ class cRazttthon(cMain, cPlayerHandler, cGame):
             pass
         
         for index in range(len(cMain.playerlist)):
-            cMain.playerlist[index][1] = int(cMain.playerlist[index][1])
-            cMain.playerlist[index][2] = int(cMain.playerlist[index][2])
-            cMain.playerlist[index][3] = int(cMain.playerlist[index][3])
-            cMain.playerlist[index][4] = int(cMain.playerlist[index][4])
+            try:
+                cMain.playerlist[index][1] = int(cMain.playerlist[index][1])
+                cMain.playerlist[index][2] = int(cMain.playerlist[index][2])
+                cMain.playerlist[index][3] = int(cMain.playerlist[index][3])
+                cMain.playerlist[index][4] = int(cMain.playerlist[index][4])
+            except ValueError:
+                cMain.playerlist.pop(index) #Remove corrupted line
+
+        if len(cMain.playerlist) == 0: #If file was corrupted we have to create a new one
+            cMain.playerlist = [['CPU', 0, 0, 0, 0]]
+
         cMain.nPlayers = len(cMain.playerlist)
 
     def savePlayerFile(self):
         try:
             playerfile = open("players.save", "w")
         except IOError:
-            print "Saving unsuccesful."
+            print "Saving unsuccessful."
             return
 
         fprintf(playerfile, "# name games wins losses quits\n")
@@ -154,7 +162,7 @@ class cRazttthon(cMain, cPlayerHandler, cGame):
             return
 
         pData = cPlayerHandler.getData(self, pid)
-        printf("The player %s has played %i games, of which they have won %i and lost %i. They have quit %i times.\n", pData[0], pData[1], pData[2], pData[3], pData[4])
+        printf("The player %15.15s has played %i games, of which they have won %i and lost %i. They have quit %i times.\n", pData[0], pData[1], pData[2], pData[3], pData[4])
         
     def leaderboard(self, strMode):
         mode = -1
@@ -180,12 +188,11 @@ class cRazttthon(cMain, cPlayerHandler, cGame):
         #Retrieve player data
         for pid in range(cPlayerHandler.getPlayers(self)):
             data.append(cPlayerHandler.getData(self, pid))
-            
-        print data
+        
         sort2d(data, mode)
-        print data
+
         printf("Leaderboard in order of games %s.\n", strMode)
         
         for player in range(len(data)):
-            printf("%i. %s: %i games played, %i games won, %i games lost, %i quits.\n", player +1, data[player][0], data[player][1], data[player][2], data[player][3], data[player][4])
+            printf("%i. %-15.15s %i games played, %i games won, %i games lost, %i quits.\n", player +1, str(data[player][0])+":", data[player][1], data[player][2], data[player][3], data[player][4])
         
