@@ -95,7 +95,13 @@ class cRazttthon(cMain, cPlayerHandler, cGame):
             if mode == 1:
                 pid1 = 0
                 
-                pName = raw_input("Enter your name: ")
+                while 1:
+                    pName = raw_input("Enter your name: ")
+                    if pName != '' and pName.lower() != 'cpu':
+                        break
+                    else:
+                        print "Try again"
+
                 pid2 = cPlayerHandler.getPID(self, pName)
                 if pid2 == -1:
                     print "No such player found. Creating.."
@@ -103,13 +109,25 @@ class cRazttthon(cMain, cPlayerHandler, cGame):
                 break
         
             elif mode == 2:
-                p1name = raw_input("Player 1, enter your name: ")
+                while 1:
+                    p1name = raw_input("Player 1, enter your name: ")
+                    if p1name != '' and p1name.lower() != 'cpu':
+                        break
+                    else:
+                        print "Try again"
+
                 pid1 = cPlayerHandler.getPID(self, p1name)
                 if pid1 == -1:
                     print "No such player found. Creating.."
                     pid1 = cPlayerHandler.addPlayer(self, p1name)
 
-                p2name = raw_input("Player 2, enter your name: ")
+                while 1:
+                    p2name = raw_input("Player 2, enter your name: ")
+                    if p2name != '' and p2name.lower() != 'cpu':
+                        break
+                    else:
+                        print "Try again"
+
                 pid2 = cPlayerHandler.getPID(self, p2name)
                 if pid2 == -1:
                     print "No such player found. Creating.."
