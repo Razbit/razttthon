@@ -43,3 +43,14 @@ def clearScr():
 #Gets current time in milliseconds
 def getTime():
     return int(round(time.time() * 1000))
+
+#Sorts a list of lists in descending order by lst[][sortBy]
+#Integer and floating-point values only, no strings!
+def sort2d(lst, sortBy):
+    for i in range(1,len(lst)):
+        for j in range(1,len(lst)):
+            if lst[j][sortBy] > lst[j-1][sortBy]: #swap items if preceding one is smaller
+                temp = lst[j]
+                lst[j] = lst[j-1]
+                lst[j-1] = temp
+    return lst

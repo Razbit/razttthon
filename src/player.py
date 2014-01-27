@@ -24,6 +24,7 @@ class cPlayerHandler(cMain):
     def __init__(self):
         pass
 
+    def getPlayers(self): return cMain.nPlayers
     def getName(self, id): return cMain.playerlist[id][0]
     def getGames(self, id): return cMain.playerlist[id][1]
     def getWins(self, id): return cMain.playerlist[id][2]
@@ -35,7 +36,8 @@ class cPlayerHandler(cMain):
     def addPlayer(self, name):
         #Adds a new player with name 'name' to the cMain's list
         cMain.playerlist.append([name, 0, 0, 0, 0]) #Add player
-        return len(cMain.playerlist) - 1 #Return PID for the newly created player
+        cMain.nPlayers += 1
+        return self.getPlayers()-1 #Return PID for the newly created player
 
     def addGame(self, id):
         try:

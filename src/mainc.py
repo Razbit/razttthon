@@ -21,12 +21,13 @@
 class cMain:
     
     playerlist=[]
+    nPlayers=0 #Number of players
 
     def __init__(self):
         pass
 
 from time import sleep
-from razlib import fprintf, clearScr
+from razlib import printf, fprintf, clearScr, sort2d
 from player import cPlayerHandler
 from gameloop import cGame
 
@@ -65,6 +66,7 @@ class cRazttthon(cMain, cPlayerHandler, cGame):
             cMain.playerlist[index][2] = int(cMain.playerlist[index][2])
             cMain.playerlist[index][3] = int(cMain.playerlist[index][3])
             cMain.playerlist[index][4] = int(cMain.playerlist[index][4])
+        cMain.nPlayers = len(cMain.playerlist)
 
     def savePlayerFile(self):
         try:
@@ -119,6 +121,53 @@ class cRazttthon(cMain, cPlayerHandler, cGame):
         
         sleep(0.5) #Why sleep? Because why not?
 
-        cGame.__init__(self, pid1, pid2) #Start new game
-        #Clear screen when game finishes
-        clearScr()
+        status = cGame.__init__(self, pid1, pid2) #Start new game
+                
+        if status == -1 or status == 2:
+            print "Game ended to a draw"
+        elif status == 0 or status == 1:
+            printf("%s won the game\n", cGame.getNames(self)[status])
+    
+    def stats(self, name):
+        #Get player ID, return if not found
+        pid = cPlayerHandler.getPID(self, name)
+        if pid == -1:
+            print "No such player found."
+            return
+
+        pData = cPlayerHandler.getData(self, pid)
+        printf("The player %s has played %i games, of which they have won %i and lost %i. They have quit %i times.\n", pData[0], pData[1], pData[2], pData[3], pData[4])
+        
+    def leaderboard(self, strMode):
+        mode = -1
+
+        if strMode[0] == 'g':
+            mode = 1 #games
+            strMode = "played"
+
+        elif strMode[0] == 'w':
+            mode = 2 #wins
+            strMode = "won"
+
+        elif strMode[0] == 'l':
+            mode = 3 #losses
+            strMode = "lost"
+
+        else:
+            print "An error occured."
+            return
+        
+        data = []
+        
+        #Retrieve player data
+        for pid in range(cPlayerHandler.getPlayers(self)):
+            data.append(cPlayerHandler.getData(self, pid))
+            
+        print data
+        sort2d(data, mode)
+        print data
+        printf("Leaderboard in order of games %s.\n", strMode)
+        
+        for player in range(len(data)):
+            printf("%i. %s: %i games played, %i games won, %i games lost, %i quits.\n", player +1, data[player][0], data[player][1], data[player][2], data[player][3], data[player][4])
+        

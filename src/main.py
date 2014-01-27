@@ -27,26 +27,62 @@ print "Welcome to Razttthon, a Tic Tac Toe -game!"
 game.parsePlayerFile()
 
 while 1:
-    arg = ""
+    arg = [] #an array of arguments from user.
+    temp = ""
     
-    while 1:
-        arg = raw_input(" >: ")
-        if arg in ['play', 'p', 'quit', 'q', 'help', 'h']:
+    while 1: #Continue asking user for an argument if not recognized
+        del arg[:] #Empty the argument array
+
+        temp = raw_input("> ")
+        temp = temp.lower()
+
+        temp[:-1] #Last char is garbage
+
+        try:
+            arg.append(temp.split()[0])
+        except IndexError:
+            print "Type 'help' if you need help."
+            continue
+        
+        try:
+            arg.append(temp.split()[1])
+        except IndexError:
+            pass #Second argument is not always mandatory
+
+        if arg[0] in ['play', 'p', 'quit', 'q', 'help', 'h', 'stats', 's']:
             break
+
+        elif arg[0] in ['leader', 'l']:
+            try:
+                if arg[1] in ['wins', 'w', 'losses', 'l', 'games', 'g']:
+                    break
+            except IndexError:
+                pass
+
         print "Type 'help' if you need help."
 
-    if arg in ['play', 'p']:
+    if arg[0] in ['play', 'p']:
         game.newGame()
 
-    elif arg in ['quit', 'q']:
-        if raw_input("Are you sure (Y/n)? ").upper() in ['N', 'NO']:
-            continue
-        break
+    elif arg[0] in ['leader', 'l']:
+        game.leaderboard(arg[1])
 
-    elif arg in ['help', 'h']:
-        print "  help, h: get help"
-        print "  quit, q: quit"
-        print "  play, p: start a new game"
+    elif arg[0] in ['stats', 's']:
+        if len(arg) > 1:
+            game.stats(arg[1])
+        else:
+            print "Type 'help' if you need help."
 
-#game.savePlayerFile()
-print "Bye!"
+    elif arg[0] in ['quit', 'q']:
+        if raw_input("Are you sure (y/N)? ").lower() in ['y', 'yes']:
+            break
+
+    elif arg[0] in ['help', 'h']:
+        print "help, h: get help"
+        print "quit, q: quit"
+        print "play, p: start a new game"
+        print "stats, s <player>: show stats for <player>"
+        print "leader, l [wins, w, losses, l, games, g]: show leaderboard"
+
+game.savePlayerFile()
+print " Bye!"

@@ -25,10 +25,6 @@ from random import sample
 
 class cGame(cMain, cPlayerHandler):
 
-    gameGrid = [[' ', ' ', ' '],[' ', ' ', ' '],[' ', ' ', ' ']] #contains the game grid and marks
-    cont = True
-    turns = 0 
-
     def __init__(self, pid1, pid2):
         if pid1 > pid2: #Flip so that player 0 has smaller pid (cpu is always player 0 in that case)
             tempPid = pid2
@@ -36,9 +32,19 @@ class cGame(cMain, cPlayerHandler):
             pid1 = tempPid
 
         self.players = [[pid1, cMain.playerlist[pid1][0], 'x'], [pid2, cMain.playerlist[pid2][0], 'o']] #name and mark for both
-        cont = True
-        turns = 0 
+
+        #init vars
+        self.cont = True
+        self.turns = 0
+        self.status = 0
+        self.gameGrid = [[' ', ' ', ' '],[' ', ' ', ' '],[' ', ' ', ' ']] #contains the game grid and marks
+
+        #Being game
         self.loop()
+        return self.status
+
+    def getNames(self):
+        return [self.players[0][1], self.players[1][1]]
 
     def loop(self): #Main game loop, loops until stop() is called.
         
@@ -49,13 +55,13 @@ class cGame(cMain, cPlayerHandler):
 
             if self.turns % 2 == 0:
                 self.turn(0)
+                self.printGame()
                 self.over(0)
             else:
                 self.turn(1)
-                self.over(1)
+                self.printGame()
+                self.over(1)         
             
-            self.printGame()
-
     def printGame(self):
         clearScr()
         printf("   # A | B | C \n")
@@ -211,6 +217,7 @@ class cGame(cMain, cPlayerHandler):
             count = rows[i].count(self.players[player][2])
             if count == 3:
                 self.stop(player)
+                return
 
         count = 0
 
@@ -220,6 +227,7 @@ class cGame(cMain, cPlayerHandler):
                     count += 1
         if count == 0: #quit if board is full
             self.stop(2)
+            return
 
     def stop(self, status):
         self.cont = False
@@ -244,3 +252,9 @@ class cGame(cMain, cPlayerHandler):
         elif status == 2: #Draw
             cPlayerHandler.addLose(self, self.players[0][0])
             cPlayerHandler.addLose(self, self.players[1][0])
+
+        self.status = status
+        
+        #clear and print, nicer that way
+        clearScr()
+        self.printGame()
