@@ -9,4 +9,6 @@ Pretty much everything is licensed under the terms of the GNU GPLv3 license, som
 
 This readme is going to be a lot longer one day, but not just *quite* yet.
 
+Finnish users: see doc/fi/readme_fi.txt
+
 Razbit
